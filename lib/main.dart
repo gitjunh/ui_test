@@ -17,189 +17,410 @@ class MyApp extends StatelessWidget {
       // home: BottomNavigationDemo(
       //     restorationId: 'bottom_navigation_labels_demo',
       //     type: BottomNavigationDemoType.withoutLabels),
-      home: BottomSheetDemo(type:BottomSheetDemoType.modal),
+      // home: BottomSheetDemo(type:BottomSheetDemoType.modal),
+      // home: ButtonDemo(type: ButtonDemoType.floating),
     );
   }
 }
 
-enum BottomSheetDemoType {
-  persistent,
-  modal,
-}
+// enum ButtonDemoType {
+//   text,
+//   elevated,
+//   outlined,
+//   toggle,
+//   floating,
+// }
+//
+// class ButtonDemo extends StatelessWidget {
+//   const ButtonDemo({Key? key, required this.type}) : super(key: key);
+//
+//   final ButtonDemoType type;
+//
+//   String _title(BuildContext context) {
+//     switch (type) {
+//       case ButtonDemoType.text:
+//         return '텍스트 버튼';
+//       case ButtonDemoType.elevated:
+//         return '돌출 버튼';
+//       case ButtonDemoType.outlined:
+//         return '윤곽 버튼';
+//       case ButtonDemoType.toggle:
+//         return '전환 버튼';
+//       case ButtonDemoType.floating:
+//         return '플로팅 작업 버튼';
+//     }
+//     return '';
+//   }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     Widget buttons;
+//     switch (type) {
+//       case ButtonDemoType.text:
+//         buttons = _TextButtonDemo();
+//         break;
+//       case ButtonDemoType.elevated:
+//         buttons = _ElevatedButtonDemo();
+//         break;
+//       case ButtonDemoType.outlined:
+//         buttons = _OutlinedButtonDemo();
+//         break;
+//       case ButtonDemoType.toggle:
+//         buttons = _ToggleButtonsDemo();
+//         break;
+//       case ButtonDemoType.floating:
+//         buttons = _FloatingActionButtonDemo();
+//         break;
+//     }
+//     return Scaffold(
+//       appBar: AppBar(
+//         automaticallyImplyLeading: false,
+//         title: Text(_title(context)),
+//       ),
+//       body: buttons,
+//     );
+//   }
+// }
+//
+// class _TextButtonDemo extends StatelessWidget {
+//   const _TextButtonDemo({Key? key}) : super(key: key);
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Center(
+//       child: Column(
+//         mainAxisSize: MainAxisSize.min,
+//         children: [
+//           TextButton(
+//             onPressed: () {},
+//             child: const Text('버튼'),
+//           ),
+//           const SizedBox(height: 12),
+//           TextButton.icon(
+//             icon: const Icon(Icons.add, size: 18),
+//             onPressed: () {},
+//             label: const Text('버튼'),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }
+//
+// class _ElevatedButtonDemo extends StatelessWidget {
+//   const _ElevatedButtonDemo({Key? key}) : super(key: key);
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Center(
+//       child: Column(
+//         mainAxisSize: MainAxisSize.min,
+//         children: [
+//           ElevatedButton(
+//             onPressed: () {},
+//             child: const Text('버튼'),
+//           ),
+//           const SizedBox(height: 12),
+//           ElevatedButton.icon(
+//             icon: const Icon(Icons.add, size: 18),
+//             label: const Text('버튼'),
+//             onPressed: () {},
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }
+//
+// class _OutlinedButtonDemo extends StatelessWidget {
+//   const _OutlinedButtonDemo({Key? key}) : super(key: key);
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Center(
+//       child: Column(
+//         mainAxisSize: MainAxisSize.min,
+//         children: [
+//           OutlinedButton(
+//             onPressed: () {},
+//             child: const Text('버튼'),
+//           ),
+//           const SizedBox(height: 12),
+//           OutlinedButton.icon(
+//             icon: const Icon(Icons.add, size: 18),
+//             label: const Text('버튼'),
+//             onPressed: () {},
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }
+//
+// class _ToggleButtonsDemo extends StatefulWidget {
+//   const _ToggleButtonsDemo({Key? key}) : super(key: key);
+//
+//   @override
+//   _ToggleButtonsDemoState createState() => _ToggleButtonsDemoState();
+// }
+//
+// class _ToggleButtonsDemoState extends State<_ToggleButtonsDemo>
+//     with RestorationMixin {
+//   final isSelected = [
+//     RestorableBool(false),
+//     RestorableBool(true),
+//     RestorableBool(false),
+//   ];
+//
+//   @override
+//   String get restorationId => 'toggle_button_demo';
+//
+//   @override
+//   void restoreState(RestorationBucket? oldBucket, bool initialRestore) {
+//     registerForRestoration(isSelected[0], 'first_item');
+//     registerForRestoration(isSelected[1], 'second_item');
+//     registerForRestoration(isSelected[2], 'third_item');
+//   }
+//
+//   @override
+//   void dispose() {
+//     for (final restorableBool in isSelected) {
+//       restorableBool.dispose();
+//     }
+//     super.dispose();
+//   }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Center(
+//       child: ToggleButtons(
+//         onPressed: (index) {
+//           setState(() {
+//             isSelected[index].value = !isSelected[index].value;
+//           });
+//         },
+//         isSelected: isSelected.map((e) => e.value).toList(),
+//         children: const [
+//           Icon(Icons.ac_unit),
+//           Icon(Icons.call),
+//           Icon(Icons.cake),
+//         ],
+//       ),
+//     );
+//   }
+// }
+//
+// class _FloatingActionButtonDemo extends StatelessWidget {
+//   const _FloatingActionButtonDemo({Key? key}) : super(key: key);
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Center(
+//       child: Column(
+//         mainAxisSize: MainAxisSize.min,
+//         children: [
+//           FloatingActionButton(
+//             onPressed: () {},
+//             tooltip: '만들기',
+//             child: const Icon(Icons.add),
+//           ),
+//           const SizedBox(height: 20),
+//           FloatingActionButton.extended(
+//             icon: const Icon(Icons.add),
+//             onPressed: () {},
+//             label: const Text('만들기'),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }
 
-class BottomSheetDemo extends StatelessWidget {
-  const BottomSheetDemo({
-    Key? key,
-    required this.type,
-  }) : super(key: key);
 
-  final BottomSheetDemoType type;
 
-  String _title(BuildContext context) {
-    switch(type) {
-      case BottomSheetDemoType.persistent:
-        return '지속적 하단 시트';
-      case BottomSheetDemoType.modal:
-        return '모달 하단 시트';
-    }
-    return '';
-  }
 
-  Widget _bottomSheetDemo(BuildContext context) {
-    switch(type) {
-      case BottomSheetDemoType.persistent:
-        return _PersistentBottomSheetDemo();
-        break;
-      case BottomSheetDemoType.modal:
-      default:
-        return _ModalBottomSheetDemo();
-        break;
-    }
-  }
 
-  @override
-  Widget build(BuildContext context) {
-    // We wrap the demo in a [Navigator] to make sure that the modal bottom
-    // sheets gets dismissed when changing demo.
-    return Navigator(
-      // Adding [ValueKey] to make sure that the widget gets rebuilt when
-      // changing type.
-      key: ValueKey(type),
-      onGenerateRoute: (settings) {
-        return MaterialPageRoute<void>(
-          builder: (context) => Scaffold(
-            appBar: AppBar(
-              automaticallyImplyLeading: false,
-              title: Text(_title(context)),
-            ),
-            floatingActionButton: FloatingActionButton(
-              onPressed: (){},
-              backgroundColor: Theme.of(context).colorScheme.secondary,
-              child: const Icon(
-                Icons.add,
-                semanticLabel: '하단 시트 표시',
-              ),
-            ),
-            body: _bottomSheetDemo(context),
-          ),
-        );
-      },
-    );
-  }
-}
+// enum BottomSheetDemoType {
+//   persistent,
+//   modal,
+// }
+//
+// class BottomSheetDemo extends StatelessWidget {
+//   const BottomSheetDemo({
+//     Key? key,
+//     required this.type,
+//   }) : super(key: key);
+//
+//   final BottomSheetDemoType type;
+//
+//   String _title(BuildContext context) {
+//     switch(type) {
+//       case BottomSheetDemoType.persistent:
+//         return '지속적 하단 시트';
+//       case BottomSheetDemoType.modal:
+//         return '모달 하단 시트';
+//     }
+//     return '';
+//   }
+//
+//   Widget _bottomSheetDemo(BuildContext context) {
+//     switch(type) {
+//       case BottomSheetDemoType.persistent:
+//         return _PersistentBottomSheetDemo();
+//         break;
+//       case BottomSheetDemoType.modal:
+//       default:
+//         return _ModalBottomSheetDemo();
+//         break;
+//     }
+//   }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     // We wrap the demo in a [Navigator] to make sure that the modal bottom
+//     // sheets gets dismissed when changing demo.
+//     return Navigator(
+//       // Adding [ValueKey] to make sure that the widget gets rebuilt when
+//       // changing type.
+//       key: ValueKey(type),
+//       onGenerateRoute: (settings) {
+//         return MaterialPageRoute<void>(
+//           builder: (context) => Scaffold(
+//             appBar: AppBar(
+//               automaticallyImplyLeading: false,
+//               title: Text(_title(context)),
+//             ),
+//             floatingActionButton: FloatingActionButton(
+//               onPressed: (){},
+//               backgroundColor: Theme.of(context).colorScheme.secondary,
+//               child: const Icon(
+//                 Icons.add,
+//                 semanticLabel: '하단 시트 표시',
+//               ),
+//             ),
+//             body: _bottomSheetDemo(context),
+//           ),
+//         );
+//       },
+//     );
+//   }
+// }
+//
+// class _PersistentBottomSheetDemo extends StatefulWidget {
+//   const _PersistentBottomSheetDemo({Key? key}) : super(key: key);
+//
+//   @override
+//   _PersistentBottomSheetDemoState createState() =>
+//       _PersistentBottomSheetDemoState();
+// }
+//
+// class _PersistentBottomSheetDemoState
+//     extends State<_PersistentBottomSheetDemo> {
+//   late VoidCallback _showBottomSheetCallback;
+//
+//   @override
+//   void initState() {
+//     super.initState();
+//     _showBottomSheetCallback = _showPersistentBottomSheet;
+//   }
+//
+//   void _showPersistentBottomSheet() {
+//     setState(() {
+//       // Disable the show bottom sheet button.
+//       // _showBottomSheetCallback = null;
+//     });
+//
+//     Scaffold.of(context)
+//         .showBottomSheet<void>(
+//           (context) {
+//             return const _BottomSheetContent();
+//           },
+//           elevation: 25,
+//         )
+//         .closed
+//         .whenComplete(() {
+//           if (mounted) {
+//             setState(() {
+//               // Re-enable the bottom sheet button.
+//               _showBottomSheetCallback = _showPersistentBottomSheet;
+//             });
+//           }
+//         });
+//   }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Center(
+//       child: ElevatedButton(
+//         onPressed: _showBottomSheetCallback,
+//         child: const Text('하단 시트 표시'),
+//       ),
+//     );
+//   }
+// }
+//
+// class _BottomSheetContent extends StatelessWidget {
+//   const _BottomSheetContent({Key? key}) : super(key: key);
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return SizedBox(
+//       height: 300,
+//       child: Column(
+//         children: [
+//           const SizedBox(
+//             height: 70,
+//             child: Center(
+//               child: Text(
+//                 '헤더',
+//                 textAlign: TextAlign.center,
+//               ),
+//             ),
+//           ),
+//           const Divider(thickness: 1),
+//           Expanded(
+//             child: ListView.builder(
+//               itemCount: 21,
+//               itemBuilder: (context, index) {
+//                 return ListTile(
+//                   title: Text('항목 $index'),
+//                 );
+//               },
+//             ),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }
+//
+// class _ModalBottomSheetDemo extends StatelessWidget {
+//   const _ModalBottomSheetDemo({Key? key}) : super(key: key);
+//
+//   void _showModalBottomSheet(BuildContext context) {
+//     showModalBottomSheet<void>(
+//       context: context,
+//       builder: (context) {
+//         return const _BottomSheetContent();
+//       },
+//     );
+//   }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Center(
+//       child: ElevatedButton(
+//         onPressed: () {
+//           _showModalBottomSheet(context);
+//         },
+//         child: const Text('하단 시트 표시'),
+//       ),
+//     );
+//   }
+// }
 
-class _PersistentBottomSheetDemo extends StatefulWidget {
-  const _PersistentBottomSheetDemo({Key? key}) : super(key: key);
 
-  @override
-  _PersistentBottomSheetDemoState createState() =>
-      _PersistentBottomSheetDemoState();
-}
 
-class _PersistentBottomSheetDemoState
-    extends State<_PersistentBottomSheetDemo> {
-  late VoidCallback _showBottomSheetCallback;
-
-  @override
-  void initState() {
-    super.initState();
-    _showBottomSheetCallback = _showPersistentBottomSheet;
-  }
-
-  void _showPersistentBottomSheet() {
-    setState(() {
-      // Disable the show bottom sheet button.
-      // _showBottomSheetCallback = null;
-    });
-
-    Scaffold.of(context)
-        .showBottomSheet<void>(
-          (context) {
-            return const _BottomSheetContent();
-          },
-          elevation: 25,
-        )
-        .closed
-        .whenComplete(() {
-          if (mounted) {
-            setState(() {
-              // Re-enable the bottom sheet button.
-              _showBottomSheetCallback = _showPersistentBottomSheet;
-            });
-          }
-        });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: ElevatedButton(
-        onPressed: _showBottomSheetCallback,
-        child: const Text('하단 시트 표시'),
-      ),
-    );
-  }
-}
-
-class _BottomSheetContent extends StatelessWidget {
-  const _BottomSheetContent({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: 300,
-      child: Column(
-        children: [
-          const SizedBox(
-            height: 70,
-            child: Center(
-              child: Text(
-                '헤더',
-                textAlign: TextAlign.center,
-              ),
-            ),
-          ),
-          const Divider(thickness: 1),
-          Expanded(
-            child: ListView.builder(
-              itemCount: 21,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  title: Text('항목 $index'),
-                );
-              },
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _ModalBottomSheetDemo extends StatelessWidget {
-  const _ModalBottomSheetDemo({Key? key}) : super(key: key);
-
-  void _showModalBottomSheet(BuildContext context) {
-    showModalBottomSheet<void>(
-      context: context,
-      builder: (context) {
-        return const _BottomSheetContent();
-      },
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: ElevatedButton(
-        onPressed: () {
-          _showModalBottomSheet(context);
-        },
-        child: const Text('하단 시트 표시'),
-      ),
-    );
-  }
-}
 
 
 // enum BottomNavigationDemoType {
@@ -365,6 +586,10 @@ class _ModalBottomSheetDemo extends StatelessWidget {
 //     );
 //   }
 // }
+
+
+
+
 
 // class BottomAppBarDemo extends StatefulWidget {
 //   const BottomAppBarDemo({Key? key}) : super(key: key);
@@ -533,6 +758,10 @@ class _ModalBottomSheetDemo extends StatelessWidget {
 //     );
 //   }
 // }
+
+
+
+
 
 // class MyStatelessWidget extends StatelessWidget {
 //   const MyStatelessWidget({Key? key}) : super(key: key);
