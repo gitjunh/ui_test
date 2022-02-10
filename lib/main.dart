@@ -14,176 +14,357 @@ class MyApp extends StatelessWidget {
       title: _title,
       // home: MyStatelessWidget(),
       // home: BottomAppBarDemo(),
-      home: BottomNavigationDemo(
-          restorationId: 'bottom_navigation_labels_demo',
-          type: BottomNavigationDemoType.withoutLabels),
+      // home: BottomNavigationDemo(
+      //     restorationId: 'bottom_navigation_labels_demo',
+      //     type: BottomNavigationDemoType.withoutLabels),
+      home: BottomSheetDemo(type:BottomSheetDemoType.modal),
     );
   }
 }
 
-enum BottomNavigationDemoType {
-  withLabels,
-  withoutLabels,
+enum BottomSheetDemoType {
+  persistent,
+  modal,
 }
 
-class BottomNavigationDemo extends StatefulWidget {
-  const BottomNavigationDemo({
+class BottomSheetDemo extends StatelessWidget {
+  const BottomSheetDemo({
     Key? key,
-    @required this.restorationId,
-    @required this.type,
+    required this.type,
   }) : super(key: key);
 
-  final String? restorationId;
-  final BottomNavigationDemoType? type;
-
-  @override
-  _BottomNavigationDemoState createState() => _BottomNavigationDemoState();
-}
-
-class _BottomNavigationDemoState extends State<BottomNavigationDemo>
-    with RestorationMixin {
-  final RestorableInt _currentIndex = RestorableInt(0);
-
-  @override
-  String get restorationId => widget.restorationId!;
-
-  @override
-  void restoreState(RestorationBucket? oldBucket, bool initialRestore) {
-    registerForRestoration(_currentIndex, 'bottom_navigation_tab_index');
-  }
-
-  @override
-  void dispose() {
-    _currentIndex.dispose();
-    super.dispose();
-  }
+  final BottomSheetDemoType type;
 
   String _title(BuildContext context) {
-    switch (widget.type) {
-      case BottomNavigationDemoType.withLabels:
-        return '지속적 라벨';
-      case BottomNavigationDemoType.withoutLabels:
-        return '선택한 라벨';
+    switch(type) {
+      case BottomSheetDemoType.persistent:
+        return '지속적 하단 시트';
+      case BottomSheetDemoType.modal:
+        return '모달 하단 시트';
     }
     return '';
   }
 
+  Widget _bottomSheetDemo(BuildContext context) {
+    switch(type) {
+      case BottomSheetDemoType.persistent:
+        return _PersistentBottomSheetDemo();
+        break;
+      case BottomSheetDemoType.modal:
+      default:
+        return _ModalBottomSheetDemo();
+        break;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
-
-    var bottomNavigationBarItems = <BottomNavigationBarItem>[
-      const BottomNavigationBarItem(
-        icon: Icon(Icons.add_comment),
-        label: '댓글',
-      ),
-      const BottomNavigationBarItem(
-        icon: Icon(Icons.calendar_today),
-        label: '캘린더',
-      ),
-      const BottomNavigationBarItem(
-        icon: Icon(Icons.account_circle),
-        label: '계정',
-      ),
-      const BottomNavigationBarItem(
-        icon: Icon(Icons.alarm_on),
-        label: '알람',
-      ),
-      const BottomNavigationBarItem(
-        icon: Icon(Icons.camera_enhance),
-        label: '카메라',
-      ),
-    ];
-
-    if (widget.type == BottomNavigationDemoType.withLabels) {
-      bottomNavigationBarItems = bottomNavigationBarItems.sublist(
-          0, bottomNavigationBarItems.length - 2);
-      _currentIndex.value = _currentIndex.value
-          .clamp(0, bottomNavigationBarItems.length - 1)
-          .toInt();
-    }
-    return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: Text(_title(context)),
-      ),
-      body: Center(
-        child: PageTransitionSwitcher(
-          transitionBuilder: (child, animation, secondaryAnimation) {
-            return FadeThroughTransition(
-              animation: animation,
-              secondaryAnimation: secondaryAnimation,
-              child: child,
-            );
-          },
-          child: _NavigaionDestinationView(
-            key: UniqueKey(),
-            item: bottomNavigationBarItems[_currentIndex.value],
+    // We wrap the demo in a [Navigator] to make sure that the modal bottom
+    // sheets gets dismissed when changing demo.
+    return Navigator(
+      // Adding [ValueKey] to make sure that the widget gets rebuilt when
+      // changing type.
+      key: ValueKey(type),
+      onGenerateRoute: (settings) {
+        return MaterialPageRoute<void>(
+          builder: (context) => Scaffold(
+            appBar: AppBar(
+              automaticallyImplyLeading: false,
+              title: Text(_title(context)),
+            ),
+            floatingActionButton: FloatingActionButton(
+              onPressed: (){},
+              backgroundColor: Theme.of(context).colorScheme.secondary,
+              child: const Icon(
+                Icons.add,
+                semanticLabel: '하단 시트 표시',
+              ),
+            ),
+            body: _bottomSheetDemo(context),
           ),
-        ),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        showUnselectedLabels:
-        widget.type == BottomNavigationDemoType.withLabels,
-        items: bottomNavigationBarItems,
-        currentIndex: _currentIndex.value,
-        type: BottomNavigationBarType.fixed,
-        // selectedFontSize: textTheme.caption.fontSize,
-        // unselectedFontSize: textTheme.caption.fontSize,
-        onTap: (index) {
-          setState((){
-            _currentIndex.value = index;
-          });
-        },
-        selectedItemColor: colorScheme.onPrimary,
-        unselectedItemColor: colorScheme.onPrimary.withOpacity(0.38),
-        backgroundColor: colorScheme.primary,
+        );
+      },
+    );
+  }
+}
+
+class _PersistentBottomSheetDemo extends StatefulWidget {
+  const _PersistentBottomSheetDemo({Key? key}) : super(key: key);
+
+  @override
+  _PersistentBottomSheetDemoState createState() =>
+      _PersistentBottomSheetDemoState();
+}
+
+class _PersistentBottomSheetDemoState
+    extends State<_PersistentBottomSheetDemo> {
+  late VoidCallback _showBottomSheetCallback;
+
+  @override
+  void initState() {
+    super.initState();
+    _showBottomSheetCallback = _showPersistentBottomSheet;
+  }
+
+  void _showPersistentBottomSheet() {
+    setState(() {
+      // Disable the show bottom sheet button.
+      // _showBottomSheetCallback = null;
+    });
+
+    Scaffold.of(context)
+        .showBottomSheet<void>(
+          (context) {
+            return const _BottomSheetContent();
+          },
+          elevation: 25,
+        )
+        .closed
+        .whenComplete(() {
+          if (mounted) {
+            setState(() {
+              // Re-enable the bottom sheet button.
+              _showBottomSheetCallback = _showPersistentBottomSheet;
+            });
+          }
+        });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: ElevatedButton(
+        onPressed: _showBottomSheetCallback,
+        child: const Text('하단 시트 표시'),
       ),
     );
   }
 }
 
-class _NavigaionDestinationView extends StatelessWidget {
-  const _NavigaionDestinationView({Key? key, required this.item})
-      : super(key: key);
-
-  final BottomNavigationBarItem item;
+class _BottomSheetContent extends StatelessWidget {
+  const _BottomSheetContent({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        ExcludeSemantics(
-          child: Center(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: Image.asset(
-                  'assets/demos/bottom_navigation_background.png',
-                  package: 'flutter_gallery_assets',
-                ),
+    return SizedBox(
+      height: 300,
+      child: Column(
+        children: [
+          const SizedBox(
+            height: 70,
+            child: Center(
+              child: Text(
+                '헤더',
+                textAlign: TextAlign.center,
               ),
             ),
           ),
-        ),
-        Center(
-          child: IconTheme(
-            data: const IconThemeData(
-              color: Colors.white,
-              size: 80,
-            ),
-            child: Semantics(
-              label: 'aaa-aaa',
-              child: item.icon,
+          const Divider(thickness: 1),
+          Expanded(
+            child: ListView.builder(
+              itemCount: 21,
+              itemBuilder: (context, index) {
+                return ListTile(
+                  title: Text('항목 $index'),
+                );
+              },
             ),
           ),
-        )
-      ],
+        ],
+      ),
     );
   }
 }
+
+class _ModalBottomSheetDemo extends StatelessWidget {
+  const _ModalBottomSheetDemo({Key? key}) : super(key: key);
+
+  void _showModalBottomSheet(BuildContext context) {
+    showModalBottomSheet<void>(
+      context: context,
+      builder: (context) {
+        return const _BottomSheetContent();
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: ElevatedButton(
+        onPressed: () {
+          _showModalBottomSheet(context);
+        },
+        child: const Text('하단 시트 표시'),
+      ),
+    );
+  }
+}
+
+
+// enum BottomNavigationDemoType {
+//   withLabels,
+//   withoutLabels,
+// }
+//
+// class BottomNavigationDemo extends StatefulWidget {
+//   const BottomNavigationDemo({
+//     Key? key,
+//     @required this.restorationId,
+//     @required this.type,
+//   }) : super(key: key);
+//
+//   final String? restorationId;
+//   final BottomNavigationDemoType? type;
+//
+//   @override
+//   _BottomNavigationDemoState createState() => _BottomNavigationDemoState();
+// }
+//
+// class _BottomNavigationDemoState extends State<BottomNavigationDemo>
+//     with RestorationMixin {
+//   final RestorableInt _currentIndex = RestorableInt(0);
+//
+//   @override
+//   String get restorationId => widget.restorationId!;
+//
+//   @override
+//   void restoreState(RestorationBucket? oldBucket, bool initialRestore) {
+//     registerForRestoration(_currentIndex, 'bottom_navigation_tab_index');
+//   }
+//
+//   @override
+//   void dispose() {
+//     _currentIndex.dispose();
+//     super.dispose();
+//   }
+//
+//   String _title(BuildContext context) {
+//     switch (widget.type) {
+//       case BottomNavigationDemoType.withLabels:
+//         return '지속적 라벨';
+//       case BottomNavigationDemoType.withoutLabels:
+//         return '선택한 라벨';
+//     }
+//     return '';
+//   }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     final colorScheme = Theme.of(context).colorScheme;
+//     final textTheme = Theme.of(context).textTheme;
+//
+//     var bottomNavigationBarItems = <BottomNavigationBarItem>[
+//       const BottomNavigationBarItem(
+//         icon: Icon(Icons.add_comment),
+//         label: '댓글',
+//       ),
+//       const BottomNavigationBarItem(
+//         icon: Icon(Icons.calendar_today),
+//         label: '캘린더',
+//       ),
+//       const BottomNavigationBarItem(
+//         icon: Icon(Icons.account_circle),
+//         label: '계정',
+//       ),
+//       const BottomNavigationBarItem(
+//         icon: Icon(Icons.alarm_on),
+//         label: '알람',
+//       ),
+//       const BottomNavigationBarItem(
+//         icon: Icon(Icons.camera_enhance),
+//         label: '카메라',
+//       ),
+//     ];
+//
+//     if (widget.type == BottomNavigationDemoType.withLabels) {
+//       bottomNavigationBarItems = bottomNavigationBarItems.sublist(
+//           0, bottomNavigationBarItems.length - 2);
+//       _currentIndex.value = _currentIndex.value
+//           .clamp(0, bottomNavigationBarItems.length - 1)
+//           .toInt();
+//     }
+//     return Scaffold(
+//       appBar: AppBar(
+//         automaticallyImplyLeading: false,
+//         title: Text(_title(context)),
+//       ),
+//       body: Center(
+//         child: PageTransitionSwitcher(
+//           transitionBuilder: (child, animation, secondaryAnimation) {
+//             return FadeThroughTransition(
+//               animation: animation,
+//               secondaryAnimation: secondaryAnimation,
+//               child: child,
+//             );
+//           },
+//           child: _NavigaionDestinationView(
+//             key: UniqueKey(),
+//             item: bottomNavigationBarItems[_currentIndex.value],
+//           ),
+//         ),
+//       ),
+//       bottomNavigationBar: BottomNavigationBar(
+//         showUnselectedLabels:
+//         widget.type == BottomNavigationDemoType.withLabels,
+//         items: bottomNavigationBarItems,
+//         currentIndex: _currentIndex.value,
+//         type: BottomNavigationBarType.fixed,
+//         // selectedFontSize: textTheme.caption.fontSize,
+//         // unselectedFontSize: textTheme.caption.fontSize,
+//         onTap: (index) {
+//           setState((){
+//             _currentIndex.value = index;
+//           });
+//         },
+//         selectedItemColor: colorScheme.onPrimary,
+//         unselectedItemColor: colorScheme.onPrimary.withOpacity(0.38),
+//         backgroundColor: colorScheme.primary,
+//       ),
+//     );
+//   }
+// }
+//
+// class _NavigaionDestinationView extends StatelessWidget {
+//   const _NavigaionDestinationView({Key? key, required this.item})
+//       : super(key: key);
+//
+//   final BottomNavigationBarItem item;
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Stack(
+//       children: [
+//         ExcludeSemantics(
+//           child: Center(
+//             child: Padding(
+//               padding: const EdgeInsets.all(16),
+//               child: ClipRRect(
+//                 borderRadius: BorderRadius.circular(8),
+//                 child: Image.asset(
+//                   'assets/demos/bottom_navigation_background.png',
+//                   package: 'flutter_gallery_assets',
+//                 ),
+//               ),
+//             ),
+//           ),
+//         ),
+//         Center(
+//           child: IconTheme(
+//             data: const IconThemeData(
+//               color: Colors.white,
+//               size: 80,
+//             ),
+//             child: Semantics(
+//               label: 'aaa-aaa',
+//               child: item.icon,
+//             ),
+//           ),
+//         )
+//       ],
+//     );
+//   }
+// }
 
 // class BottomAppBarDemo extends StatefulWidget {
 //   const BottomAppBarDemo({Key? key}) : super(key: key);
