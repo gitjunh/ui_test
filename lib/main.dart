@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
       // home: BottomAppBarDemo(),
       home: BottomNavigationDemo(
           restorationId: 'bottom_navigation_labels_demo',
-          type: BottomNavigationDemoType.withLabels),
+          type: BottomNavigationDemoType.withoutLabels),
     );
   }
 }
